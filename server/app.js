@@ -1,24 +1,32 @@
 import express from "express";
 import cors from "cors";
 import productRouter from "./apps/products.js";
-
-const app = express();
-const port = 4001;
+import { client } from "./utils/db.js";
 
 // `cors` เป็น Middleware ที่ทำให้ Client ใดๆ ตามที่กำหนด
 // สามารถสร้าง Request มาหา Server เราได้
 // ในโค้ดบรรทัดล่างนี้คือให้ Client ไหนก็ได้สามารถสร้าง Request มาหา Server ได้
-app.use(cors());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+async function init() {
+  const app = express();
+  const port = 4001;
 
-app.use("/products", productRouter);
+  await client.connect();
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  app.use(cors());
 
-app.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
-});
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use("/products", productRouter);
+
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
+
+  app.listen(port, () => {
+    console.log(`Server is running at port ${port}`);
+  });
+}
+
+init();
