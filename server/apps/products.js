@@ -5,11 +5,18 @@ import { ObjectId } from "mongodb";
 const productRouter = Router();
 
 productRouter.get("/", async (req, res) => {
+  const name = req.query.name;
+  const category = req.query.category;
+  const query = {};
+  if (name) {
+    query.name = new RegExp(name, "i");
+  }
+  if (category) {
+    query.category = new RegExp(category, "i");
+  }
   try {
     const collection = db.collection("products");
-
-    const products = await collection.find({}).limit(10).toArray();
-
+    const products = await collection.find(query).limit(10).toArray();
     return res.json({ data: products });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
