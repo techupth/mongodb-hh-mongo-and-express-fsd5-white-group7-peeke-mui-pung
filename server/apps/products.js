@@ -38,7 +38,21 @@ productRouter.post("/", async (req, res) => {
   }
 });
 
-productRouter.put("/:id", (req, res) => {});
+productRouter.put("/:id", async (req, res) => {
+  try {
+    const collection = db.collection("products");
+    const newProductData = { ...req.body, modified_id: new Date() };
+    const productId = new ObjectId(req.params.id);
+
+    await collection.updateOne({ _id: productId }, { $set: newProductData });
+
+    return res.json({
+      message: `Movie record ${productId} has been updated successfully`,
+    });
+  } catch (error) {
+    return res.json({ message: `${error}` });
+  }
+});
 
 productRouter.delete("/:id", (req, res) => {});
 
