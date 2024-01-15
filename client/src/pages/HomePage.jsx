@@ -9,13 +9,14 @@ function HomePage() {
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
   const [select, setSelect] = useState("");
+  const [inputSearch, setInputSearch] = useState("");
 
-  const getProducts = async (category) => {
+  const getProducts = async (category, name) => {
     try {
       setIsError(false);
       setIsLoading(true);
       const results = await axios(
-        `http://localhost:4001/products?category=${category}`
+        `http://localhost:4001/products?category=${category}&name=${name}`
       );
       setProducts(results.data.data);
       setIsLoading(false);
@@ -34,11 +35,17 @@ function HomePage() {
   const handleSelectChange = (e) => {
     const selectedCategory = e.target.value;
     setSelect(selectedCategory);
-    getProducts(selectedCategory);
+    getProducts(selectedCategory, inputSearch);
+  };
+
+  const handleInputChange = (e) => {
+    const inputText = e.target.value;
+    setInputSearch(inputText);
+    getProducts(select, inputText);
   };
 
   useEffect(() => {
-    getProducts(select);
+    getProducts(select, inputSearch);
   }, []);
 
   return (
@@ -57,7 +64,11 @@ function HomePage() {
         <div className="search-box">
           <label>
             Search product
-            <input type="text" placeholder="Search by name" />
+            <input
+              type="text"
+              placeholder="Search by name"
+              onChange={handleInputChange}
+            />
           </label>
         </div>
         <div className="category-filter">
