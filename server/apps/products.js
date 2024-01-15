@@ -4,7 +4,24 @@ import { ObjectId } from "mongodb";
 
 const productRouter = Router();
 
-productRouter.get("/", (req, res) => {});
+productRouter.get("/", async (req, res) => {
+  try {
+    const name = req.query.keywords;
+    const category = req.query.category;
+    const query = {};
+    if (name) {
+      query.name = new RegExp(name, "i");
+    }
+    if (category) {
+      query.category = new RegExp(category, "i");
+    }
+    const collection = db.collection("products");
+    const allProducts = await collection.find(query).limit(10).toArray();
+    return res.json({ data: allProducts });
+  } catch (error) {
+    return res.json({ message: `${error}` });
+  }
+});
 
 productRouter.get("/:id", (req, res) => {});
 
