@@ -16,7 +16,11 @@ productRouter.get("/", async (req, res) => {
   }
   try {
     const collection = db.collection("products");
-    const products = await collection.find(query).limit(10).toArray();
+    const products = await collection
+      .find(query)
+      .limit(10)
+      .sort({ created_at: -1 })
+      .toArray();
     return res.json({ data: products });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
