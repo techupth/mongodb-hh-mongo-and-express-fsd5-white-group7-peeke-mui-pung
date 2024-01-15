@@ -54,6 +54,19 @@ productRouter.put("/:id", async (req, res) => {
   }
 });
 
-productRouter.delete("/:id", (req, res) => {});
+productRouter.delete("/:id", async (req, res) => {
+  try {
+    const collection = db.collection("products");
+    const productId = new ObjectId(req.params.id);
+
+    await collection.deleteOne({ _id: productId });
+
+    return res.json({
+      message: `Movie record ${productId} has been deleted successfully`,
+    });
+  } catch (error) {
+    return res.json({ message: `${error}` });
+  }
+});
 
 export default productRouter;
