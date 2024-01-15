@@ -16,7 +16,11 @@ productRouter.get("/", async (req, res) => {
       query.category = new RegExp(category, "i");
     }
     const collection = db.collection("products");
-    const allProducts = await collection.find(query).limit(10).toArray();
+    const allProducts = await collection
+      .find(query)
+      .limit(10)
+      .sort({ created_at: -1 })
+      .toArray();
     return res.json({ data: allProducts });
   } catch (error) {
     return res.json({ message: `${error}` });
