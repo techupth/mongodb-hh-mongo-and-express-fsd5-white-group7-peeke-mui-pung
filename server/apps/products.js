@@ -40,7 +40,7 @@ productRouter.post("/", async (req, res) => {
   try {
     const collection = db.collection("products");
 
-    const productData = { ...req.body };
+    const productData = { ...req.body, created_at: new Date() };
     const products = await collection.insertOne(productData);
 
     return res.json({
@@ -55,7 +55,7 @@ productRouter.put("/:productId", async (req, res) => {
   try {
     const collection = db.collection("products");
     const productId = new ObjectId(req.params.productId);
-    const newProductData = { ...req.body };
+    const newProductData = { ...req.body, modified_at: new Date() };
     await collection.updateOne(
       {
         _id: productId,
