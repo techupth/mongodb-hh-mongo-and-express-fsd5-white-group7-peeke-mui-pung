@@ -8,12 +8,15 @@ function HomePage() {
   const [products, setProducts] = useState([]);
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const [select, setSelect] = useState("");
 
-  const getProducts = async () => {
+  const getProducts = async (category) => {
     try {
       setIsError(false);
       setIsLoading(true);
-      const results = await axios("http://localhost:4001/products");
+      const results = await axios(
+        `http://localhost:4001/products?category=${category}`
+      );
       setProducts(results.data.data);
       setIsLoading(false);
     } catch (error) {
@@ -28,8 +31,14 @@ function HomePage() {
     setProducts(newProducts);
   };
 
+  const handleSelectChange = (e) => {
+    const selectedCategory = e.target.value;
+    setSelect(selectedCategory);
+    getProducts(selectedCategory);
+  };
+
   useEffect(() => {
-    getProducts();
+    getProducts(select);
   }, []);
 
   return (
@@ -54,7 +63,12 @@ function HomePage() {
         <div className="category-filter">
           <label>
             View Category
-            <select id="category" name="category" value="it">
+            <select
+              id="category"
+              name="category"
+              value={select}
+              onChange={handleSelectChange}
+            >
               <option disabled value="">
                 -- Select a category --
               </option>
