@@ -30,6 +30,7 @@ function HomePage() {
     await axios.delete(`http://localhost:4001/products/${productId}`);
     const newProducts = products.filter((product) => product.id !== productId);
     setProducts(newProducts);
+    window.location.reload();
   };
 
   const handleSelectChange = (e) => {
